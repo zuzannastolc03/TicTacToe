@@ -5,36 +5,70 @@ import java.awt.event.ActionListener;
 
 
 public class Frame extends JFrame implements ActionListener{
-    public final static int width = 640;
-    public final static int height = 480;
     First_panel first_panel;
     Game_panel game_panel;
+    JPanel cards;
+    CardLayout c1;
     Frame(){
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setTitle("TicTacToe");
         this.setIconImage((new ImageIcon("tictactoe.png")).getImage());
 
+        c1 = new CardLayout();
+        cards = new JPanel();
         first_panel = new First_panel();
-        this.add(first_panel);
+        game_panel = new Game_panel();
+
+        cards.setLayout(c1);
+        cards.add(first_panel, "First panel");
+        cards.add(game_panel, "Game panel");
+        c1.show(cards, "First panel");
+
         first_panel.one_player.addActionListener(this);
         first_panel.two_players.addActionListener(this);
 
+        for(int i=0; i<game_panel.fields.length; i++){
+            game_panel.fields[i].addActionListener(this);
+        }
+
+        this.add(cards);
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
-    public void create_game_panel(){
-        game_panel = new Game_panel();
-        this.add(game_panel);
-        first_panel.setVisible(false);
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if((e.getSource()==first_panel.one_player || e.getSource() == first_panel.two_players)) {
-            create_game_panel();
-            first_panel.setVisible(false);
+        if(e.getSource() == first_panel.one_player){
+            System.out.println("Jeden gracz");
+            c1.show(cards, "Game panel");
+        } else if (e.getSource() == first_panel.two_players) {
+            System.out.println("Dwóch graczy");
+            c1.show(cards, "Game panel");
+        }
+        else {
+            for(int i=0; i<game_panel.fields.length; i++){
+                if (e.getSource() == game_panel.fields[i]) {
+                    if (!game_panel.whose_turn) {
+                        game_panel.fields[i].setForeground(game_panel.player1_color);
+                        game_panel.fields[i].setText("O");
+                        UIManager.put("Button.disabledText", (game_panel.player1_color));
+                    } else {
+                        game_panel.fields[i].setForeground(game_panel.player2_color);
+                        game_panel.fields[i].setText("X");
+                        UIManager.put("Button.disabledText", (game_panel.player2_color));
+                    }
+                    game_panel.fields[i].setEnabled(false);
+                    game_panel.fields[i].setFocusable(false);
+                    game_panel.check_winner();
+                    game_panel.update_label();
+                    if(!game_panel.is_running){
+                        game_panel.game_over();
+                    }
+                    game_panel.whose_turn = !game_panel.whose_turn;
+                }
+            }
         }
     }
 }

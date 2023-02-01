@@ -3,9 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Game_panel extends JPanel implements ActionListener{
-    final static int width = 640;
-    final static int height = 480;
+public class Game_panel extends Panel_settings{
     final static int number_of_fields = 9;
     JButton[] fields;
     int[] x_coordinates = new int[3];
@@ -16,10 +14,6 @@ public class Game_panel extends JPanel implements ActionListener{
     Color player1_color = Color.orange;
     Color player2_color = new Color(0, 150, 200);
     Game_panel(){
-        this.setPreferredSize(new Dimension(width, height));
-        this.setBackground(new Color(220, 230, 250));
-        this.setLayout(null);
-
         for(int i=0; i<x_coordinates.length; i++){
             x_coordinates[i] = (int)(width-3*120)/2 + i*120;
         }
@@ -41,7 +35,7 @@ public class Game_panel extends JPanel implements ActionListener{
             fields[i].setBounds(x_coordinates[i%3], y_coordinates[(int)(i/3)], 120, 120);
             fields[i].setBackground(Color.WHITE);
             fields[i].setFont(new Font("Cuckoo", Font.BOLD, 100));
-            fields[i].addActionListener(this);
+//            fields[i].addActionListener(this);
             this.add(fields[i]);
         }
 
@@ -81,30 +75,6 @@ public class Game_panel extends JPanel implements ActionListener{
         else if (whose_turn && !is_running){
             label.setForeground(player2_color);
             label.setText("Turn: X");
-        }
-    }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        for (JButton field : fields) {
-            if (e.getSource() == field) {
-                if (!whose_turn) {
-                    field.setForeground(player1_color);
-                    field.setText("O");
-                    UIManager.put("Button.disabledText", (player1_color));
-                } else {
-                    field.setForeground(player2_color);
-                    field.setText("X");
-                    UIManager.put("Button.disabledText", (player2_color));
-                }
-                field.setEnabled(false);
-                field.setFocusable(false);
-                check_winner();
-                update_label();
-                if(!is_running){
-                    game_over();
-                }
-                whose_turn = !whose_turn;
-            }
         }
     }
 }

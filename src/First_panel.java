@@ -1,16 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-public class First_panel extends JPanel{
-    public final static int width = 640;
-    public final static int height = 480;
+
+public class First_panel extends Panel_settings{
     JButton one_player;
     JButton two_players;
     JLabel label;
     First_panel(){
-        this.setPreferredSize(new Dimension(width, height));
-        this.setBackground(new Color(220, 230, 250));
-        this.setLayout(null);
-
         one_player = new JButton("One player");
         one_player.setBounds((int)(width-2*200)/3, (int)(height-100)/2, 200, 100);
         one_player.setBackground(Color.WHITE);
