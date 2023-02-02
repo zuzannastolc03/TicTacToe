@@ -9,16 +9,18 @@ public class Frame extends JFrame implements ActionListener{
     Game_panel game_panel;
     JPanel cards;
     CardLayout c1;
+    Game game;
     Frame(){
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setTitle("TicTacToe");
         this.setIconImage((new ImageIcon("tictactoe.png")).getImage());
 
+        game = new Game();
         c1 = new CardLayout();
         cards = new JPanel();
         first_panel = new First_panel();
-        game_panel = new Game_panel();
+        game_panel = new Game_panel(game.whose_turn, game.is_running);
 
         cards.setLayout(c1);
         cards.add(first_panel, "First panel");
@@ -41,32 +43,31 @@ public class Frame extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == first_panel.one_player){
-            System.out.println("Jeden gracz");
             c1.show(cards, "Game panel");
         } else if (e.getSource() == first_panel.two_players) {
-            System.out.println("Dwóch graczy");
             c1.show(cards, "Game panel");
         }
         else {
             for(int i=0; i<game_panel.fields.length; i++){
                 if (e.getSource() == game_panel.fields[i]) {
-                    if (!game_panel.whose_turn) {
-                        game_panel.fields[i].setForeground(game_panel.player1_color);
-                        game_panel.fields[i].setText("O");
-                        UIManager.put("Button.disabledText", (game_panel.player1_color));
-                    } else {
-                        game_panel.fields[i].setForeground(game_panel.player2_color);
-                        game_panel.fields[i].setText("X");
-                        UIManager.put("Button.disabledText", (game_panel.player2_color));
-                    }
-                    game_panel.fields[i].setEnabled(false);
-                    game_panel.fields[i].setFocusable(false);
-                    game_panel.check_winner();
-                    game_panel.update_label();
-                    if(!game_panel.is_running){
-                        game_panel.game_over();
-                    }
-                    game_panel.whose_turn = !game_panel.whose_turn;
+                    game.update(i);
+                    game_panel.update_label(game.whose_turn, game.is_running);
+                    game_panel.update_fields(game.whose_turn, i);
+//                    if (!game_panel.whose_turn) {
+//                        game_panel.fields[i].setForeground(game_panel.player1_color);
+//                        game_panel.fields[i].setText("O");
+//                        UIManager.put("Button.disabledText", (game_panel.player1_color));
+//                    } else {
+//                        game_panel.fields[i].setForeground(game_panel.player2_color);
+//                        game_panel.fields[i].setText("X");
+//                        UIManager.put("Button.disabledText", (game_panel.player2_color));
+//                    }
+//                    game_panel.fields[i].setEnabled(false);
+//                    game_panel.fields[i].setFocusable(false);
+//                    if(!game_panel.is_running){
+//                        game_panel.game_over();
+//                    }
+//                    game_panel.whose_turn = !game_panel.whose_turn;
                 }
             }
         }
