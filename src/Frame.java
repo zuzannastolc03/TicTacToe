@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 
 
 public class Frame extends JFrame implements ActionListener{
-    First_panel first_panel;
-    Game_panel game_panel;
+    Panel first_panel;
+    Panel game_panel;
     JPanel cards;
     CardLayout c1;
     Game game;
@@ -19,8 +19,8 @@ public class Frame extends JFrame implements ActionListener{
         game = new Game();
         c1 = new CardLayout();
         cards = new JPanel();
-        first_panel = new First_panel();
-        game_panel = new Game_panel(game.whose_turn, game.is_running);
+        first_panel = new Panel();
+        game_panel = new Panel(game.whose_turn, game.is_running, game.draw);
 
         cards.setLayout(c1);
         cards.add(first_panel, "First panel");
@@ -31,7 +31,9 @@ public class Frame extends JFrame implements ActionListener{
         first_panel.two_players.addActionListener(this);
 
         for(int i=0; i<game_panel.fields.length; i++){
-            game_panel.fields[i].addActionListener(this);
+            for(int j=0; j<game_panel.fields[0].length; j++){
+                game_panel.fields[i][j].addActionListener(this);
+            }
         }
 
         this.add(cards);
@@ -49,25 +51,11 @@ public class Frame extends JFrame implements ActionListener{
         }
         else {
             for(int i=0; i<game_panel.fields.length; i++){
-                if (e.getSource() == game_panel.fields[i]) {
-                    game.update(i);
-                    game_panel.update_label(game.whose_turn, game.is_running);
-                    game_panel.update_fields(game.whose_turn, i);
-//                    if (!game_panel.whose_turn) {
-//                        game_panel.fields[i].setForeground(game_panel.player1_color);
-//                        game_panel.fields[i].setText("O");
-//                        UIManager.put("Button.disabledText", (game_panel.player1_color));
-//                    } else {
-//                        game_panel.fields[i].setForeground(game_panel.player2_color);
-//                        game_panel.fields[i].setText("X");
-//                        UIManager.put("Button.disabledText", (game_panel.player2_color));
-//                    }
-//                    game_panel.fields[i].setEnabled(false);
-//                    game_panel.fields[i].setFocusable(false);
-//                    if(!game_panel.is_running){
-//                        game_panel.game_over();
-//                    }
-//                    game_panel.whose_turn = !game_panel.whose_turn;
+                for(int j=0; j<game_panel.fields[0].length; j++){
+                    if (e.getSource() == game_panel.fields[i][j]) {
+                        game.update(i, j);
+                        game_panel.update(game.whose_turn, game.is_running, game.draw, i, j);
+                    }
                 }
             }
         }
