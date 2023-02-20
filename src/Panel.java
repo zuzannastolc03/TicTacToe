@@ -6,21 +6,23 @@ public class Panel extends JPanel {
     final static int height = 480;
     Button one_player;
     Button two_players;
+    Button restart;
     Label label;
     JButton[][] fields;
     int[] x_coordinates = new int[3];
     int[] y_coordinates = new int[3];
     final static Color player1_color = Color.orange;
     final static Color player2_color = new Color(0, 150, 200);
+    int final_answer;
     // First panel constructor
     Panel(){
         standard_settings();
         one_player = new Button("One player");
-        one_player.setLocation((int)(width-2*one_player.getWidth())/3, (int)(height-100)/2);
+        one_player.setLocation((int)(width-2*one_player.getWidth())/3, (int)(height-one_player.getHeight())/2);
         this.add(one_player);
 
         two_players = new Button("Two players");
-        two_players.setLocation((int)(width-2*two_players.getWidth())/3*2+two_players.getWidth(), (int)(height-100)/2);
+        two_players.setLocation((int)(width-2*two_players.getWidth())/3*2+two_players.getWidth(), (int)(height-two_players.getHeight())/2);
         this.add(two_players);
 
         label = new Label("Welcome to TicTacToe!");
@@ -30,6 +32,11 @@ public class Panel extends JPanel {
     // Second panel constructor
     Panel(boolean whose_turn, boolean is_running, boolean draw){
         standard_settings();
+        restart = new Button("Restart");
+        restart.setLocation((int)(width-restart.getWidth())/2, (int)(height-restart.getHeight())/2);
+        restart.setVisible(false);
+        this.add(restart);
+
         for(int i=0; i<x_coordinates.length; i++){
             x_coordinates[i] = (int)(width-3*120)/2 + i*120;
         }
@@ -84,6 +91,7 @@ public class Panel extends JPanel {
         }
     }
     public void update_fields(boolean whose_turn, boolean is_running, int i, int j){
+        UIManager.put("Button.disabledText", (Color.GRAY));
         if (!whose_turn) {
             fields[i][j].setForeground(player1_color);
             fields[i][j].setText("O");
@@ -99,6 +107,8 @@ public class Panel extends JPanel {
             for (JButton[] field : fields) {
                 for (int l = 0; l < fields[0].length; l++) {
                     field[l].setEnabled(false);
+                    UIManager.put("Button.disabledText", (Color.GRAY));
+                    restart.setVisible(true);
                 }
             }
         }
