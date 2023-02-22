@@ -1,7 +1,8 @@
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalButtonUI;
 import java.awt.*;
 
-public class Panel extends JPanel {
+public class Pane extends JLayeredPane {
     final static int width = 640;
     final static int height = 480;
     Button one_player;
@@ -13,16 +14,17 @@ public class Panel extends JPanel {
     int[] y_coordinates = new int[3];
     final static Color player1_color = Color.orange;
     final static Color player2_color = new Color(0, 150, 200);
-    int final_answer;
     // First panel constructor
-    Panel(){
+    Pane(){
         standard_settings();
         one_player = new Button("One player");
         one_player.setLocation((int)(width-2*one_player.getWidth())/3, (int)(height-one_player.getHeight())/2);
+        one_player.setOpaque(true);
         this.add(one_player);
 
         two_players = new Button("Two players");
         two_players.setLocation((int)(width-2*two_players.getWidth())/3*2+two_players.getWidth(), (int)(height-two_players.getHeight())/2);
+        two_players.setOpaque(true);
         this.add(two_players);
 
         label = new Label("Welcome to TicTacToe!");
@@ -30,12 +32,12 @@ public class Panel extends JPanel {
         this.add(label);
     }
     // Second panel constructor
-    Panel(boolean whose_turn, boolean is_running, boolean draw){
+    Pane(boolean whose_turn, boolean is_running, boolean draw){
         standard_settings();
         restart = new Button("Restart");
         restart.setLocation((int)(width-restart.getWidth())/2, (int)(height-restart.getHeight())/2);
-        restart.setVisible(false);
-        this.add(restart);
+        restart.setOpaque(true);
+//        this.add(restart, Integer.valueOf(0));
 
         for(int i=0; i<x_coordinates.length; i++){
             x_coordinates[i] = (int)(width-3*120)/2 + i*120;
@@ -46,7 +48,7 @@ public class Panel extends JPanel {
         label = new Label("");
         update_label(whose_turn, is_running, draw);
         label.setLocation((int)(width-label.getWidth())/2, (int)(y_coordinates[0]-label.getHeight())/2);
-        this.add(label);
+        this.add(label, Integer.valueOf(1));
 
         fields = new JButton[3][3];
 
@@ -56,7 +58,8 @@ public class Panel extends JPanel {
                 fields[i][j].setBounds(x_coordinates[i], y_coordinates[j], 120, 120);
                 fields[i][j].setBackground(Color.WHITE);
                 fields[i][j].setFont(new Font("Cuckoo", Font.BOLD, 100));
-                this.add(fields[i][j]);
+                fields[i][j].setOpaque(true);
+                this.add(fields[i][j], Integer.valueOf(1));
             }
         }
     }
@@ -64,6 +67,7 @@ public class Panel extends JPanel {
     public void standard_settings(){
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(new Color(220, 230, 250));
+        this.setOpaque(true);
         this.setLayout(null);
     }
     public void update_label(boolean whose_turn, boolean is_running, boolean draw){
@@ -91,26 +95,33 @@ public class Panel extends JPanel {
         }
     }
     public void update_fields(boolean whose_turn, boolean is_running, int i, int j){
-        UIManager.put("Button.disabledText", (Color.GRAY));
         if (!whose_turn) {
-            fields[i][j].setForeground(player1_color);
             fields[i][j].setText("O");
-            UIManager.put("Button.disabledText", (player1_color));
-        } else {
-            fields[i][j].setForeground(player2_color);
+            fields[i][j].setUI(new MetalButtonUI() {
+                protected Color getDisabledTextColor() {
+                    return player1_color;
+                }
+            });
+        } else if (whose_turn) {
             fields[i][j].setText("X");
-            UIManager.put("Button.disabledText", (player2_color));
+            fields[i][j].setUI(new MetalButtonUI() {
+                protected Color getDisabledTextColor() {
+                    return player2_color;
+                }
+            });
         }
         fields[i][j].setEnabled(false);
         fields[i][j].setFocusable(false);
+
         if(!is_running) {
             for (JButton[] field : fields) {
                 for (int l = 0; l < fields[0].length; l++) {
-                    field[l].setEnabled(false);
-                    UIManager.put("Button.disabledText", (Color.GRAY));
-                    restart.setVisible(true);
+                    if(field[l].isEnabled()){
+                        field[l].setEnabled(false);
+                    }
                 }
             }
+            this.add(restart, Integer.valueOf(2));
         }
     }
     public void update(boolean whose_turn, boolean is_running, boolean draw, int i, int j){

@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 
 
 public class Frame extends JFrame implements ActionListener{
-    Panel first_panel;
-    Panel game_panel;
+    Pane first_panel;
+    Pane game_panel;
     JPanel cards;
     CardLayout c1;
     Game game;
@@ -18,7 +18,7 @@ public class Frame extends JFrame implements ActionListener{
 
         c1 = new CardLayout();
         cards = new JPanel();
-        first_panel = new Panel();
+        first_panel = new Pane();
 
         cards.setLayout(c1);
         cards.add(first_panel, "First panel");
@@ -34,7 +34,7 @@ public class Frame extends JFrame implements ActionListener{
     }
     public void new_game(){
         game = new Game();
-        game_panel = new Panel(game.whose_turn, game.is_running, game.draw);
+        game_panel = new Pane(game.whose_turn, game.is_running, game.draw);
         game_panel.restart.addActionListener(this);
         for(int i=0; i<game_panel.fields.length; i++){
             for(int j=0; j<game_panel.fields[0].length; j++){
