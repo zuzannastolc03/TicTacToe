@@ -48,8 +48,10 @@ public class Frame extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == first_panel.one_player){
+            game.number_of_players = false;
             c1.show(cards, "Game panel");
         } else if (e.getSource() == first_panel.two_players) {
+            game.number_of_players = true;
             c1.show(cards, "Game panel");
         } else if(e.getSource() == game_panel.restart){
             new_game();
@@ -58,7 +60,7 @@ public class Frame extends JFrame implements ActionListener{
                 for(int j=0; j<game_panel.fields[0].length; j++){
                     if (e.getSource() == game_panel.fields[i][j]) {
                         game.update(i, j);
-                        game_panel.update(game.whose_turn, game.is_running, game.draw, i, j);
+                        game_panel.update(game.whose_turn, game.is_running, game.draw, i, j, game.type_of_win);
                     }
                 }
             }

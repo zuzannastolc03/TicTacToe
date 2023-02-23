@@ -14,6 +14,7 @@ public class Pane extends JLayeredPane {
     int[] y_coordinates = new int[3];
     final static Color player1_color = Color.orange;
     final static Color player2_color = new Color(0, 150, 200);
+    final static Color game_over_field_color = Color.lightGray;
     // First panel constructor
     Pane(){
         standard_settings();
@@ -94,7 +95,7 @@ public class Pane extends JLayeredPane {
             label.setText("Unpredicted situation!");
         }
     }
-    public void update_fields(boolean whose_turn, boolean is_running, int i, int j){
+    public void update_fields(boolean whose_turn, int i, int j){
         if (!whose_turn) {
             fields[i][j].setText("O");
             fields[i][j].setUI(new MetalButtonUI() {
@@ -112,7 +113,8 @@ public class Pane extends JLayeredPane {
         }
         fields[i][j].setEnabled(false);
         fields[i][j].setFocusable(false);
-
+    }
+    public void game_over(boolean is_running, int type_of_win){
         if(!is_running) {
             for (JButton[] field : fields) {
                 for (int l = 0; l < fields[0].length; l++) {
@@ -121,11 +123,54 @@ public class Pane extends JLayeredPane {
                     }
                 }
             }
+            switch (type_of_win) {
+                case 1 -> {
+                    fields[0][0].setBackground(game_over_field_color);
+                    fields[0][1].setBackground(game_over_field_color);
+                    fields[0][2].setBackground(game_over_field_color);
+                }
+                case 2 -> {
+                    fields[1][0].setBackground(game_over_field_color);
+                    fields[1][1].setBackground(game_over_field_color);
+                    fields[1][2].setBackground(game_over_field_color);
+                }
+                case 3 -> {
+                    fields[2][0].setBackground(game_over_field_color);
+                    fields[2][1].setBackground(game_over_field_color);
+                    fields[2][2].setBackground(game_over_field_color);
+                }
+                case 4 -> {
+                    fields[0][0].setBackground(game_over_field_color);
+                    fields[1][0].setBackground(game_over_field_color);
+                    fields[2][0].setBackground(game_over_field_color);
+                }
+                case 5 -> {
+                    fields[0][1].setBackground(game_over_field_color);
+                    fields[1][1].setBackground(game_over_field_color);
+                    fields[2][1].setBackground(game_over_field_color);
+                }
+                case 6 -> {
+                    fields[0][2].setBackground(game_over_field_color);
+                    fields[1][2].setBackground(game_over_field_color);
+                    fields[2][2].setBackground(game_over_field_color);
+                }
+                case 7 -> {
+                    fields[0][0].setBackground(game_over_field_color);
+                    fields[1][1].setBackground(game_over_field_color);
+                    fields[2][2].setBackground(game_over_field_color);
+                }
+                case 8 -> {
+                    fields[2][0].setBackground(game_over_field_color);
+                    fields[1][1].setBackground(game_over_field_color);
+                    fields[0][2].setBackground(game_over_field_color);
+                }
+            }
             this.add(restart, Integer.valueOf(2));
         }
     }
-    public void update(boolean whose_turn, boolean is_running, boolean draw, int i, int j){
+    public void update(boolean whose_turn, boolean is_running, boolean draw, int i, int j, int type_of_win){
         update_label(whose_turn, is_running, draw);
-        update_fields(whose_turn, is_running, i, j);
+        update_fields(whose_turn, i, j);
+        game_over(is_running, type_of_win);
     }
 }
