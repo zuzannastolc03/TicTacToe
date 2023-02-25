@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 
 
 public class Frame extends JFrame implements ActionListener{
@@ -61,6 +62,15 @@ public class Frame extends JFrame implements ActionListener{
                     if (e.getSource() == game_panel.fields[i][j]) {
                         game.update(i, j);
                         game_panel.update(game.whose_turn, game.is_running, game.draw, i, j, game.type_of_win);
+                        if(!game.number_of_players && game.is_running){
+                            Point2D k = game.computers_shot();
+                            int x = (int)k.getX();
+                            int y = (int)k.getY();
+                            if(x<=2 && y<=2){
+                                game.update(x, y);
+                                game_panel.update(game.whose_turn, game.is_running, game.draw, x, y, game.type_of_win);
+                            }
+                        }
                     }
                 }
             }

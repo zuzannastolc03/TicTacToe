@@ -1,8 +1,11 @@
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Game {
     boolean whose_turn;
-    boolean is_running;
+    public boolean is_running;
     boolean draw;
     int[][] fields = new int[3][3];
     int type_of_win = 0;
@@ -47,6 +50,7 @@ public class Game {
             is_running = false;
             type_of_win = 8;
         }
+//        System.out.println(is_running);
         return type_of_win;
     }
     public void update(int i, int j){
@@ -60,22 +64,40 @@ public class Game {
         whose_turn = !whose_turn;
     }
     public boolean check_draw(){
+        if(is_running){
+            for(int i=0; i<fields.length; i++){
+                for(int j=0; j<fields[0].length; j++){
+                    if(fields[i][j] == 0){
+                        return false;
+                    }
+                }
+            }
+            is_running = false;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    public Point2D computers_shot(){
+        List<Point2D> temp_list = new ArrayList<>();
         for(int i=0; i<fields.length; i++){
             for(int j=0; j<fields[0].length; j++){
-                if(fields[i][j] == 0){
-                    return false;
+                if(fields[i][j]==0){
+                    Point2D p = new Point2D.Double(i,j);
+                    temp_list.add(p);
                 }
             }
         }
-        is_running = false;
-        return true;
+        if(!temp_list.isEmpty()){
+            Random random = new Random();
+            Point2D k;
+            k = temp_list.get(random.nextInt(temp_list.size()));
+            return k;
+        }
+        else {
+            Point2D k = new Point2D.Double(3,3);
+            return k;
+        }
     }
-//    public int[] computers_shot(){
-//        int[] coordinates = new int[2];
-//        Random random = new Random();
-//        coordinates[0] = random.nextInt(3);
-//        Random rand = new Random();
-//        coordinates[1] = rand.nextInt(3);
-//        return coordinates;
-//    }
 }
