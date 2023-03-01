@@ -6,8 +6,8 @@ import java.awt.geom.Point2D;
 
 
 public class Frame extends JFrame implements ActionListener{
-    Pane first_panel;
-    Pane game_panel;
+    Pane firstPanel;
+    Pane gamePanel;
     JPanel cards;
     CardLayout c1;
     Game game;
@@ -19,56 +19,56 @@ public class Frame extends JFrame implements ActionListener{
 
         c1 = new CardLayout();
         cards = new JPanel();
-        first_panel = new Pane();
+        firstPanel = new Pane();
 
         cards.setLayout(c1);
-        cards.add(first_panel, "First panel");
-        new_game();
+        cards.add(firstPanel, "First panel");
+        newGame();
 
-        first_panel.one_player.addActionListener(this);
-        first_panel.two_players.addActionListener(this);
+        firstPanel.onePlayer.addActionListener(this);
+        firstPanel.twoPlayers.addActionListener(this);
 
         this.add(cards);
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
-    public void new_game(){
+    public void newGame(){
         game = new Game();
-        game_panel = new Pane(game.whose_turn, game.is_running, game.draw);
-        game_panel.restart.addActionListener(this);
-        for(int i=0; i<game_panel.fields.length; i++){
-            for(int j=0; j<game_panel.fields[0].length; j++){
-                game_panel.fields[i][j].addActionListener(this);
+        gamePanel = new Pane(game.whoseTurn, game.isRunning, game.draw);
+        gamePanel.restart.addActionListener(this);
+        for(int i=0; i<gamePanel.fields.length; i++){
+            for(int j=0; j<gamePanel.fields[0].length; j++){
+                gamePanel.fields[i][j].addActionListener(this);
             }
         }
-        cards.add(game_panel, "Game panel");
+        cards.add(gamePanel, "Game panel");
         c1.show(cards, "First panel");
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == first_panel.one_player){
-            game.number_of_players = false;
+        if(e.getSource() == firstPanel.onePlayer){
+            game.numberOfPlayers = false;
             c1.show(cards, "Game panel");
-        } else if (e.getSource() == first_panel.two_players) {
-            game.number_of_players = true;
+        } else if (e.getSource() == firstPanel.twoPlayers) {
+            game.numberOfPlayers = true;
             c1.show(cards, "Game panel");
-        } else if(e.getSource() == game_panel.restart){
-            new_game();
+        } else if(e.getSource() == gamePanel.restart){
+            newGame();
         } else {
-            for(int i=0; i<game_panel.fields.length; i++){
-                for(int j=0; j<game_panel.fields[0].length; j++){
-                    if (e.getSource() == game_panel.fields[i][j]) {
+            for(int i=0; i<gamePanel.fields.length; i++){
+                for(int j=0; j<gamePanel.fields[0].length; j++){
+                    if (e.getSource() == gamePanel.fields[i][j]) {
                         game.update(i, j);
-                        game_panel.update(game.whose_turn, game.is_running, game.draw, i, j, game.type_of_win);
-                        if(!game.number_of_players && game.is_running){
-                            Point2D k = game.computers_shot();
+                        gamePanel.update(game.whoseTurn, game.isRunning, game.draw, i, j, game.typeOfWin);
+                        if(!game.numberOfPlayers && game.isRunning){
+                            Point2D k = game.computersShot();
                             int x = (int)k.getX();
                             int y = (int)k.getY();
                             if(x<=2 && y<=2){
                                 game.update(x, y);
-                                game_panel.update(game.whose_turn, game.is_running, game.draw, x, y, game.type_of_win);
+                                gamePanel.update(game.whoseTurn, game.isRunning, game.draw, x, y, game.typeOfWin);
                             }
                         }
                     }

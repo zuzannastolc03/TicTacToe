@@ -4,67 +4,66 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    boolean whose_turn;
-    public boolean is_running;
+    boolean whoseTurn;
+    boolean isRunning;
     boolean draw;
     int[][] fields = new int[3][3];
-    int type_of_win = 0;
-    boolean number_of_players;
+    int typeOfWin = 0;
+    boolean numberOfPlayers;
     Game(){
-        is_running = true;
+        isRunning = true;
         draw = false;
-        whose_turn = pick_who_starts();
+        whoseTurn = pickWhoStarts();
         for(int i=0; i<fields.length; i++){
             for(int j=0; j<fields[0].length; j++){
                 fields[i][j] = 0;
             }
         }
     }
-    public boolean pick_who_starts(){
+    public boolean pickWhoStarts(){
         Random random = new Random();
         return random.nextBoolean();
     }
-    public int check_winner(){
+    public int checkWinner(){
         if(fields[0][0] == fields[0][1] && fields[0][0] == fields[0][2] && fields[0][0] != 0){
-            is_running = false;
-            type_of_win = 1;
+            isRunning = false;
+            typeOfWin = 1;
         } else if (fields[1][0] == fields[1][1] && fields[1][0] == fields[1][2] && fields[1][0] != 0) {
-            is_running = false;
-            type_of_win = 2;
+            isRunning = false;
+            typeOfWin = 2;
         } else if (fields[2][0] == fields[2][1] && fields[2][0] == fields[2][2] && fields[2][0] != 0) {
-            is_running = false;
-            type_of_win = 3;
+            isRunning = false;
+            typeOfWin = 3;
         } else if (fields[0][0] == fields[1][0] && fields[0][0] == fields[2][0] && fields[0][0] != 0) {
-            is_running = false;
-            type_of_win = 4;
+            isRunning = false;
+            typeOfWin = 4;
         } else if (fields[0][1] == fields[1][1] && fields[0][1] == fields[2][1] && fields[0][1] != 0) {
-            is_running = false;
-            type_of_win = 5;
+            isRunning = false;
+            typeOfWin = 5;
         } else if (fields[0][2] == fields[1][2] && fields[0][2] == fields[2][2] && fields[0][2] != 0) {
-            is_running = false;
-            type_of_win = 6;
+            isRunning = false;
+            typeOfWin = 6;
         } else if (fields[0][0] == fields[1][1] && fields[0][0] == fields[2][2] && fields[0][0] != 0) {
-            is_running = false;
-            type_of_win = 7;
+            isRunning = false;
+            typeOfWin = 7;
         } else if (fields[0][2] == fields[1][1] && fields[0][2] == fields[2][0] && fields[0][2] != 0) {
-            is_running = false;
-            type_of_win = 8;
+            isRunning = false;
+            typeOfWin = 8;
         }
-//        System.out.println(is_running);
-        return type_of_win;
+        return typeOfWin;
     }
     public void update(int i, int j){
-        if (whose_turn){
+        if (whoseTurn){
             fields[i][j] = 1;
-        } else if (!whose_turn){
+        } else if (!whoseTurn){
             fields[i][j] = 2;
         }
-        check_winner();
-        draw = check_draw();
-        whose_turn = !whose_turn;
+        checkWinner();
+        draw = checkDraw();
+        whoseTurn = !whoseTurn;
     }
-    public boolean check_draw(){
-        if(is_running){
+    public boolean checkDraw(){
+        if(isRunning){
             for(int i=0; i<fields.length; i++){
                 for(int j=0; j<fields[0].length; j++){
                     if(fields[i][j] == 0){
@@ -72,27 +71,27 @@ public class Game {
                     }
                 }
             }
-            is_running = false;
+            isRunning = false;
             return true;
         }
         else {
             return false;
         }
     }
-    public Point2D computers_shot(){
-        List<Point2D> temp_list = new ArrayList<>();
+    public Point2D computersShot(){
+        List<Point2D> tempList = new ArrayList<>();
         for(int i=0; i<fields.length; i++){
             for(int j=0; j<fields[0].length; j++){
                 if(fields[i][j]==0){
                     Point2D p = new Point2D.Double(i,j);
-                    temp_list.add(p);
+                    tempList.add(p);
                 }
             }
         }
-        if(!temp_list.isEmpty()){
+        if(!tempList.isEmpty()){
             Random random = new Random();
             Point2D k;
-            k = temp_list.get(random.nextInt(temp_list.size()));
+            k = tempList.get(random.nextInt(tempList.size()));
             return k;
         }
         else {
