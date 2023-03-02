@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    boolean whoseTurn;
+    boolean OTurn;
     boolean isRunning;
     boolean draw;
     int[][] fields = new int[3][3];
@@ -13,7 +13,7 @@ public class Game {
     Game(){
         isRunning = true;
         draw = false;
-        whoseTurn = pickWhoStarts();
+        OTurn = pickWhoStarts();
         for(int i=0; i<fields.length; i++){
             for(int j=0; j<fields[0].length; j++){
                 fields[i][j] = 0;
@@ -27,40 +27,42 @@ public class Game {
     public int checkWinner(){
         if(fields[0][0] == fields[0][1] && fields[0][0] == fields[0][2] && fields[0][0] != 0){
             isRunning = false;
-            typeOfWin = 1;
+            return 1;
         } else if (fields[1][0] == fields[1][1] && fields[1][0] == fields[1][2] && fields[1][0] != 0) {
             isRunning = false;
-            typeOfWin = 2;
+            return 2;
         } else if (fields[2][0] == fields[2][1] && fields[2][0] == fields[2][2] && fields[2][0] != 0) {
             isRunning = false;
-            typeOfWin = 3;
+            return 3;
         } else if (fields[0][0] == fields[1][0] && fields[0][0] == fields[2][0] && fields[0][0] != 0) {
             isRunning = false;
-            typeOfWin = 4;
+            return 4;
         } else if (fields[0][1] == fields[1][1] && fields[0][1] == fields[2][1] && fields[0][1] != 0) {
             isRunning = false;
-            typeOfWin = 5;
+            return 5;
         } else if (fields[0][2] == fields[1][2] && fields[0][2] == fields[2][2] && fields[0][2] != 0) {
             isRunning = false;
-            typeOfWin = 6;
+            return 6;
         } else if (fields[0][0] == fields[1][1] && fields[0][0] == fields[2][2] && fields[0][0] != 0) {
             isRunning = false;
-            typeOfWin = 7;
+            return 7;
         } else if (fields[0][2] == fields[1][1] && fields[0][2] == fields[2][0] && fields[0][2] != 0) {
             isRunning = false;
-            typeOfWin = 8;
+            return 8;
         }
-        return typeOfWin;
+        else {
+            return 0;
+        }
     }
     public void update(int i, int j){
-        if (whoseTurn){
+        if (OTurn){
             fields[i][j] = 1;
-        } else if (!whoseTurn){
+        } else if (!OTurn){
             fields[i][j] = 2;
         }
-        checkWinner();
+        typeOfWin = checkWinner();
         draw = checkDraw();
-        whoseTurn = !whoseTurn;
+        OTurn = !OTurn;
     }
     public boolean checkDraw(){
         if(isRunning){
@@ -95,8 +97,7 @@ public class Game {
             return k;
         }
         else {
-            Point2D k = new Point2D.Double(3,3);
-            return k;
+            return new Point2D.Double(3,3);
         }
     }
 }

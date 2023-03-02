@@ -5,31 +5,33 @@ import java.awt.*;
 public class Pane extends JLayeredPane {
     final static int WIDTH = 640;
     final static int HEIGHT = 480;
-    Button onePlayer;
-    Button twoPlayers;
+    final static int FIELD_SIZE = 120;
+    Button onePlayerButton;
+    Button twoPlayersButton;
     Button restart;
     Label label;
     JButton[][] fields;
     int[] xCoordinates = new int[3];
     int[] yCoordinates = new int[3];
-    final static Color player1Color = Color.orange;
-    final static Color player2Color = new Color(0, 150, 200);
-    final static Color gameOverFieldColor = Color.lightGray;
+    final static Color O_COLOR = Color.orange;
+    final static Color X_COLOR = new Color(0, 150, 200);
+    final static Color GAME_OVER_FIELD_COLOR = Color.lightGray;
+    final static Color BACKGROUND_COLOR = new Color(220, 230, 250);
     // First panel constructor
     Pane(){
         standardSettings();
-        onePlayer = new Button("One player");
-        onePlayer.setLocation((int)(WIDTH-2*onePlayer.getWidth())/3, (int)(HEIGHT-onePlayer.getHeight())/2);
-        onePlayer.setOpaque(true);
-        this.add(onePlayer);
+        onePlayerButton = new Button("One player");
+        onePlayerButton.setLocation((int)(WIDTH-2*onePlayerButton.getWidth())/3, (int)(HEIGHT-onePlayerButton.getHeight())/2);
+        onePlayerButton.setOpaque(true);
+        this.add(onePlayerButton);
 
-        twoPlayers = new Button("Two players");
-        twoPlayers.setLocation((int)(WIDTH-2*twoPlayers.getWidth())/3*2+twoPlayers.getWidth(), (int)(HEIGHT-twoPlayers.getHeight())/2);
-        twoPlayers.setOpaque(true);
-        this.add(twoPlayers);
+        twoPlayersButton = new Button("Two players");
+        twoPlayersButton.setLocation((int)(WIDTH-2*twoPlayersButton.getWidth())/3*2+twoPlayersButton.getWidth(), (int)(HEIGHT-twoPlayersButton.getHeight())/2);
+        twoPlayersButton.setOpaque(true);
+        this.add(twoPlayersButton);
 
         label = new Label("Welcome to TicTacToe!");
-        label.setLocation((int)(WIDTH-label.getWidth())/2, ((int)(HEIGHT-3*120)/2-label.getHeight())/2);
+        label.setLocation((int)(WIDTH-label.getWidth())/2, ((int)(HEIGHT-3*FIELD_SIZE)/2-label.getHeight())/2);
         this.add(label);
     }
     // Second panel constructor
@@ -40,10 +42,10 @@ public class Pane extends JLayeredPane {
         restart.setOpaque(true);
 
         for(int i=0; i<xCoordinates.length; i++){
-            xCoordinates[i] = (int)(WIDTH-3*120)/2 + i*120;
+            xCoordinates[i] = (int)(WIDTH-3*FIELD_SIZE)/2 + i*FIELD_SIZE;
         }
         for(int i=0; i<yCoordinates.length; i++){
-            yCoordinates[i] = (int)(HEIGHT-3*120)/2 + i*120;
+            yCoordinates[i] = (int)(HEIGHT-3*FIELD_SIZE)/2 + i*FIELD_SIZE;
         }
         label = new Label("");
         updateLabel(whoseTurn, isRunning, draw);
@@ -55,7 +57,7 @@ public class Pane extends JLayeredPane {
         for(int i=0; i<xCoordinates.length; i++){
             for(int j=0; j<yCoordinates.length; j++){
                 fields[i][j] = new JButton();
-                fields[i][j].setBounds(xCoordinates[i], yCoordinates[j], 120, 120);
+                fields[i][j].setBounds(xCoordinates[i], yCoordinates[j], FIELD_SIZE, FIELD_SIZE);
                 fields[i][j].setBackground(Color.WHITE);
                 fields[i][j].setFont(new Font("Cuckoo", Font.BOLD, 100));
                 fields[i][j].setOpaque(true);
@@ -66,24 +68,24 @@ public class Pane extends JLayeredPane {
     // Standard settings for both panels
     public void standardSettings(){
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        this.setBackground(new Color(220, 230, 250));
+        this.setBackground(BACKGROUND_COLOR);
         this.setOpaque(true);
         this.setLayout(null);
     }
     public void updateLabel(boolean whoseTurn, boolean isRunning, boolean draw){
         if(whoseTurn && isRunning && !draw){
-            label.setForeground(player1Color);
+            label.setForeground(O_COLOR);
             label.setText("Turn: O");
         } else if (!whoseTurn && isRunning && !draw) {
-            label.setForeground(player2Color);
+            label.setForeground(X_COLOR);
             label.setText("Turn: X" );
         }
         else if (!whoseTurn && !isRunning && !draw) {
-            label.setForeground(player1Color);
+            label.setForeground(O_COLOR);
             label.setText("O wins");
         }
         else if (whoseTurn && !isRunning && !draw){
-            label.setForeground(player2Color);
+            label.setForeground(X_COLOR);
             label.setText("X wins");
         } else if (!isRunning && draw) {
             label.setForeground(Color.BLACK);
@@ -99,14 +101,14 @@ public class Pane extends JLayeredPane {
             fields[i][j].setText("O");
             fields[i][j].setUI(new MetalButtonUI() {
                 protected Color getDisabledTextColor() {
-                    return player1Color;
+                    return O_COLOR;
                 }
             });
         } else if (whoseTurn) {
             fields[i][j].setText("X");
             fields[i][j].setUI(new MetalButtonUI() {
                 protected Color getDisabledTextColor() {
-                    return player2Color;
+                    return X_COLOR;
                 }
             });
         }
@@ -124,44 +126,44 @@ public class Pane extends JLayeredPane {
             }
             switch (typeOfWin) {
                 case 1 -> {
-                    fields[0][0].setBackground(gameOverFieldColor);
-                    fields[0][1].setBackground(gameOverFieldColor);
-                    fields[0][2].setBackground(gameOverFieldColor);
+                    fields[0][0].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[0][1].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[0][2].setBackground(GAME_OVER_FIELD_COLOR);
                 }
                 case 2 -> {
-                    fields[1][0].setBackground(gameOverFieldColor);
-                    fields[1][1].setBackground(gameOverFieldColor);
-                    fields[1][2].setBackground(gameOverFieldColor);
+                    fields[1][0].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[1][1].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[1][2].setBackground(GAME_OVER_FIELD_COLOR);
                 }
                 case 3 -> {
-                    fields[2][0].setBackground(gameOverFieldColor);
-                    fields[2][1].setBackground(gameOverFieldColor);
-                    fields[2][2].setBackground(gameOverFieldColor);
+                    fields[2][0].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[2][1].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[2][2].setBackground(GAME_OVER_FIELD_COLOR);
                 }
                 case 4 -> {
-                    fields[0][0].setBackground(gameOverFieldColor);
-                    fields[1][0].setBackground(gameOverFieldColor);
-                    fields[2][0].setBackground(gameOverFieldColor);
+                    fields[0][0].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[1][0].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[2][0].setBackground(GAME_OVER_FIELD_COLOR);
                 }
                 case 5 -> {
-                    fields[0][1].setBackground(gameOverFieldColor);
-                    fields[1][1].setBackground(gameOverFieldColor);
-                    fields[2][1].setBackground(gameOverFieldColor);
+                    fields[0][1].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[1][1].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[2][1].setBackground(GAME_OVER_FIELD_COLOR);
                 }
                 case 6 -> {
-                    fields[0][2].setBackground(gameOverFieldColor);
-                    fields[1][2].setBackground(gameOverFieldColor);
-                    fields[2][2].setBackground(gameOverFieldColor);
+                    fields[0][2].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[1][2].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[2][2].setBackground(GAME_OVER_FIELD_COLOR);
                 }
                 case 7 -> {
-                    fields[0][0].setBackground(gameOverFieldColor);
-                    fields[1][1].setBackground(gameOverFieldColor);
-                    fields[2][2].setBackground(gameOverFieldColor);
+                    fields[0][0].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[1][1].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[2][2].setBackground(GAME_OVER_FIELD_COLOR);
                 }
                 case 8 -> {
-                    fields[2][0].setBackground(gameOverFieldColor);
-                    fields[1][1].setBackground(gameOverFieldColor);
-                    fields[0][2].setBackground(gameOverFieldColor);
+                    fields[2][0].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[1][1].setBackground(GAME_OVER_FIELD_COLOR);
+                    fields[0][2].setBackground(GAME_OVER_FIELD_COLOR);
                 }
             }
             this.add(restart, Integer.valueOf(2));
