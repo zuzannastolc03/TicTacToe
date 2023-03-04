@@ -4,13 +4,14 @@ import java.util.*;
 public class Game {
     boolean OTurn;
     boolean isRunning;
-    HashMap<String, Integer> typeOfWin = new HashMap<>();
+    HashMap<String, Integer> typeOfWin;
     boolean draw;
     int[][] fields;
     boolean numberOfPlayers;
     Game(int SIZE_OF_BOARD){
         fields = new int[SIZE_OF_BOARD][SIZE_OF_BOARD];
         isRunning = true;
+        typeOfWin = new HashMap<>();
         draw = false;
         OTurn = pickWhoStarts();
         for(int i=0; i<fields.length; i++){
@@ -23,15 +24,14 @@ public class Game {
         Random random = new Random();
         return random.nextBoolean();
     }
-    public HashMap<String, Integer> checkWinner(int SIZE_OF_BOARD){
-        HashMap<String, Integer> localTypeOfWin = new HashMap<>();
+    public void checkWinner(int SIZE_OF_BOARD){
         for(int i = 0; i<SIZE_OF_BOARD; i++){
             HashSet<Integer> horizontal = new HashSet<>();
             for(int j = 0; j<SIZE_OF_BOARD; j++){
                 horizontal.add(fields[i][j]);
             }
             if(horizontal.size() == 1 && !horizontal.contains(0)){
-                localTypeOfWin.put("horizontal", i);
+                typeOfWin.put("horizontal", i);
                 isRunning = false;
             }
         }
@@ -41,7 +41,7 @@ public class Game {
                 vertical.add(fields[j][i]);
             }
             if(vertical.size() == 1 && !vertical.contains(0)){
-                localTypeOfWin.put("vertical", i);
+                typeOfWin.put("vertical", i);
                 isRunning = false;
             }
         }
@@ -50,7 +50,7 @@ public class Game {
             diagonal1.add(fields[j][j]);
         }
         if(diagonal1.size() == 1 && !diagonal1.contains(0)){
-            localTypeOfWin.put("diagonal1", 0);
+            typeOfWin.put("diagonal1", 0);
             isRunning = false;
         }
         HashSet<Integer> diagonal2 = new HashSet<>();
@@ -58,10 +58,9 @@ public class Game {
             diagonal2.add(fields[j][SIZE_OF_BOARD - 1 - j]);
         }
         if(diagonal2.size() == 1 && !diagonal2.contains(0)){
-            localTypeOfWin.put("diagonal2", 0);
+            typeOfWin.put("diagonal2", 0);
             isRunning = false;
         }
-        return localTypeOfWin;
     }
     public void update(int i, int j, int SIZE_OF_BOARD){
         if (OTurn){
@@ -69,7 +68,7 @@ public class Game {
         } else if (!OTurn){
             fields[i][j] = 2;
         }
-        typeOfWin = checkWinner(SIZE_OF_BOARD);
+        checkWinner(SIZE_OF_BOARD);
         draw = checkDraw();
         OTurn = !OTurn;
     }
