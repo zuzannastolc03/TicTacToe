@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalButtonUI;
 import java.awt.*;
+import java.awt.geom.Point2D;
+import java.util.HashMap;
 
 public class Pane extends JLayeredPane {
     final static int WIDTH = 640;
@@ -11,8 +13,7 @@ public class Pane extends JLayeredPane {
     Button restart;
     Label label;
     JButton[][] fields;
-    int[] xCoordinates = new int[3];
-    int[] yCoordinates = new int[3];
+    Point2D firstFieldCoordinates;
     final static Color O_COLOR = Color.orange;
     final static Color X_COLOR = new Color(0, 150, 200);
     final static Color GAME_OVER_FIELD_COLOR = Color.lightGray;
@@ -35,29 +36,25 @@ public class Pane extends JLayeredPane {
         this.add(label);
     }
     // Second panel constructor
-    Pane(boolean whoseTurn, boolean isRunning, boolean draw){
+    Pane(boolean whoseTurn, boolean isRunning, boolean draw, int SIZE_OF_BOARD){
         standardSettings();
         restart = new Button("Restart");
         restart.setLocation((int)(WIDTH-restart.getWidth())/2, (int)(HEIGHT-restart.getHeight())/2);
         restart.setOpaque(true);
 
-        for(int i=0; i<xCoordinates.length; i++){
-            xCoordinates[i] = (int)(WIDTH-3*FIELD_SIZE)/2 + i*FIELD_SIZE;
-        }
-        for(int i=0; i<yCoordinates.length; i++){
-            yCoordinates[i] = (int)(HEIGHT-3*FIELD_SIZE)/2 + i*FIELD_SIZE;
-        }
+        firstFieldCoordinates = new Point2D.Double((double)(WIDTH-SIZE_OF_BOARD*FIELD_SIZE)/2, (double)(HEIGHT-SIZE_OF_BOARD*FIELD_SIZE)/2);
+
         label = new Label("");
         updateLabel(whoseTurn, isRunning, draw);
-        label.setLocation((int)(WIDTH-label.getWidth())/2, (int)(yCoordinates[0]-label.getHeight())/2);
+        label.setLocation((int)(WIDTH-label.getWidth())/2, (int)(firstFieldCoordinates.getY()-label.getHeight())/2);
         this.add(label, Integer.valueOf(1));
 
-        fields = new JButton[3][3];
+        fields = new JButton[SIZE_OF_BOARD][SIZE_OF_BOARD];
 
-        for(int i=0; i<xCoordinates.length; i++){
-            for(int j=0; j<yCoordinates.length; j++){
+        for(int i=0; i<SIZE_OF_BOARD; i++){
+            for(int j=0; j<SIZE_OF_BOARD; j++){
                 fields[i][j] = new JButton();
-                fields[i][j].setBounds(xCoordinates[i], yCoordinates[j], FIELD_SIZE, FIELD_SIZE);
+                fields[i][j].setBounds((int)(firstFieldCoordinates.getX() + (i * FIELD_SIZE)), (int)(firstFieldCoordinates.getY() + (j * FIELD_SIZE)), FIELD_SIZE, FIELD_SIZE);
                 fields[i][j].setBackground(Color.WHITE);
                 fields[i][j].setFont(new Font("Cuckoo", Font.BOLD, 100));
                 fields[i][j].setOpaque(true);
@@ -115,7 +112,7 @@ public class Pane extends JLayeredPane {
         fields[i][j].setEnabled(false);
         fields[i][j].setFocusable(false);
     }
-    public void gameOver(boolean isRunning, int typeOfWin){
+    public void gameOver(boolean isRunning, HashMap<String, Integer> typeOfWin, int SIZE_OF_BOARD){
         if(!isRunning) {
             for (JButton[] field : fields) {
                 for (int l = 0; l < fields[0].length; l++) {
@@ -124,54 +121,29 @@ public class Pane extends JLayeredPane {
                     }
                 }
             }
-            switch (typeOfWin) {
-                case 1 -> {
-                    fields[0][0].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[0][1].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[0][2].setBackground(GAME_OVER_FIELD_COLOR);
+            if (typeOfWin.containsKey("vertical")){
+                for(int i = 0; i<SIZE_OF_BOARD; i++){
+                    fields[i][typeOfWin.get("vertical")].setBackground(GAME_OVER_FIELD_COLOR);
                 }
-                case 2 -> {
-                    fields[1][0].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[1][1].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[1][2].setBackground(GAME_OVER_FIELD_COLOR);
+            } else if (typeOfWin.containsKey("horizontal")) {
+                for(int i = 0; i<SIZE_OF_BOARD; i++){
+                    fields[typeOfWin.get("horizontal")][i].setBackground(GAME_OVER_FIELD_COLOR);
                 }
-                case 3 -> {
-                    fields[2][0].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[2][1].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[2][2].setBackground(GAME_OVER_FIELD_COLOR);
+            } else if (typeOfWin.containsKey("diagonal1")) {
+                for(int i = 0; i<SIZE_OF_BOARD; i++){
+                    fields[i][i].setBackground(GAME_OVER_FIELD_COLOR);
                 }
-                case 4 -> {
-                    fields[0][0].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[1][0].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[2][0].setBackground(GAME_OVER_FIELD_COLOR);
-                }
-                case 5 -> {
-                    fields[0][1].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[1][1].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[2][1].setBackground(GAME_OVER_FIELD_COLOR);
-                }
-                case 6 -> {
-                    fields[0][2].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[1][2].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[2][2].setBackground(GAME_OVER_FIELD_COLOR);
-                }
-                case 7 -> {
-                    fields[0][0].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[1][1].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[2][2].setBackground(GAME_OVER_FIELD_COLOR);
-                }
-                case 8 -> {
-                    fields[2][0].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[1][1].setBackground(GAME_OVER_FIELD_COLOR);
-                    fields[0][2].setBackground(GAME_OVER_FIELD_COLOR);
+            } else if (typeOfWin.containsKey("diagonal2")) {
+                for(int i = 0; i<SIZE_OF_BOARD; i++){
+                    fields[i][SIZE_OF_BOARD - 1 - i].setBackground(GAME_OVER_FIELD_COLOR);
                 }
             }
             this.add(restart, Integer.valueOf(2));
         }
     }
-    public void update(boolean whoseTurn, boolean isRunning, boolean draw, int i, int j, int typeOfWin){
+    public void update(boolean whoseTurn, boolean isRunning, boolean draw, int i, int j, HashMap<String, Integer> typeOfWin, int SIZE_OF_BOARD){
         updateLabel(whoseTurn, isRunning, draw);
         updateFields(whoseTurn, i, j);
-        gameOver(isRunning, typeOfWin);
+        gameOver(isRunning, typeOfWin, SIZE_OF_BOARD);
     }
 }

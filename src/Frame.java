@@ -11,6 +11,7 @@ public class Frame extends JFrame implements ActionListener{
     JPanel cards;
     CardLayout c1;
     Game game;
+    final static int SIZE_OF_BOARD = 3;
     Frame(){
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -34,8 +35,8 @@ public class Frame extends JFrame implements ActionListener{
         this.setVisible(true);
     }
     public void newGame(){
-        game = new Game();
-        gamePanel = new Pane(game.OTurn, game.isRunning, game.draw);
+        game = new Game(SIZE_OF_BOARD);
+        gamePanel = new Pane(game.OTurn, game.isRunning, game.draw, SIZE_OF_BOARD);
         gamePanel.restart.addActionListener(this);
         for(int i=0; i<gamePanel.fields.length; i++){
             for(int j=0; j<gamePanel.fields[0].length; j++){
@@ -60,15 +61,15 @@ public class Frame extends JFrame implements ActionListener{
             for(int i=0; i<gamePanel.fields.length; i++){
                 for(int j=0; j<gamePanel.fields[0].length; j++){
                     if (e.getSource() == gamePanel.fields[i][j]) {
-                        game.update(i, j);
-                        gamePanel.update(game.OTurn, game.isRunning, game.draw, i, j, game.typeOfWin);
+                        game.update(i, j, SIZE_OF_BOARD);
+                        gamePanel.update(game.OTurn, game.isRunning, game.draw, i, j, game.typeOfWin, SIZE_OF_BOARD);
                         if(!game.numberOfPlayers && game.isRunning){
                             Point2D k = game.computersShot();
                             int x = (int)k.getX();
                             int y = (int)k.getY();
                             if(x<=2 && y<=2){
-                                game.update(x, y);
-                                gamePanel.update(game.OTurn, game.isRunning, game.draw, x, y, game.typeOfWin);
+                                game.update(x, y, SIZE_OF_BOARD);
+                                gamePanel.update(game.OTurn, game.isRunning, game.draw, x, y, game.typeOfWin, SIZE_OF_BOARD);
                             }
                         }
                     }
