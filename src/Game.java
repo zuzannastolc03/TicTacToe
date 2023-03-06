@@ -1,70 +1,79 @@
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Game {
-    boolean whose_turn;
-    public boolean is_running;
+    boolean OTurn;
+    boolean isRunning;
+    HashMap<String, Integer> typeOfWin;
     boolean draw;
-    int[][] fields = new int[3][3];
-    int type_of_win = 0;
-    boolean number_of_players;
-    Game(){
-        is_running = true;
+    int[][] fields;
+    boolean numberOfPlayers;
+    Game(int SIZE_OF_BOARD){
+        fields = new int[SIZE_OF_BOARD][SIZE_OF_BOARD];
+        isRunning = true;
+        typeOfWin = new HashMap<>();
         draw = false;
-        whose_turn = pick_who_starts();
+        OTurn = pickWhoStarts();
         for(int i=0; i<fields.length; i++){
             for(int j=0; j<fields[0].length; j++){
                 fields[i][j] = 0;
             }
         }
     }
-    public boolean pick_who_starts(){
+    public boolean pickWhoStarts(){
         Random random = new Random();
         return random.nextBoolean();
     }
-    public int check_winner(){
-        if(fields[0][0] == fields[0][1] && fields[0][0] == fields[0][2] && fields[0][0] != 0){
-            is_running = false;
-            type_of_win = 1;
-        } else if (fields[1][0] == fields[1][1] && fields[1][0] == fields[1][2] && fields[1][0] != 0) {
-            is_running = false;
-            type_of_win = 2;
-        } else if (fields[2][0] == fields[2][1] && fields[2][0] == fields[2][2] && fields[2][0] != 0) {
-            is_running = false;
-            type_of_win = 3;
-        } else if (fields[0][0] == fields[1][0] && fields[0][0] == fields[2][0] && fields[0][0] != 0) {
-            is_running = false;
-            type_of_win = 4;
-        } else if (fields[0][1] == fields[1][1] && fields[0][1] == fields[2][1] && fields[0][1] != 0) {
-            is_running = false;
-            type_of_win = 5;
-        } else if (fields[0][2] == fields[1][2] && fields[0][2] == fields[2][2] && fields[0][2] != 0) {
-            is_running = false;
-            type_of_win = 6;
-        } else if (fields[0][0] == fields[1][1] && fields[0][0] == fields[2][2] && fields[0][0] != 0) {
-            is_running = false;
-            type_of_win = 7;
-        } else if (fields[0][2] == fields[1][1] && fields[0][2] == fields[2][0] && fields[0][2] != 0) {
-            is_running = false;
-            type_of_win = 8;
+    public void checkWinner(int SIZE_OF_BOARD){
+        for(int i = 0; i<SIZE_OF_BOARD; i++){
+            HashSet<Integer> horizontal = new HashSet<>();
+            for(int j = 0; j<SIZE_OF_BOARD; j++){
+                horizontal.add(fields[i][j]);
+            }
+            if(horizontal.size() == 1 && !horizontal.contains(0)){
+                typeOfWin.put("horizontal", i);
+                isRunning = false;
+            }
         }
-//        System.out.println(is_running);
-        return type_of_win;
+        for(int i = 0; i<SIZE_OF_BOARD; i++){
+            HashSet<Integer> vertical = new HashSet<>();
+            for(int j = 0; j<SIZE_OF_BOARD; j++){
+                vertical.add(fields[j][i]);
+            }
+            if(vertical.size() == 1 && !vertical.contains(0)){
+                typeOfWin.put("vertical", i);
+                isRunning = false;
+            }
+        }
+        HashSet<Integer> diagonal1 = new HashSet<>();
+        for(int j = 0; j<SIZE_OF_BOARD; j++){
+            diagonal1.add(fields[j][j]);
+        }
+        if(diagonal1.size() == 1 && !diagonal1.contains(0)){
+            typeOfWin.put("diagonal1", 0);
+            isRunning = false;
+        }
+        HashSet<Integer> diagonal2 = new HashSet<>();
+        for(int j = 0; j<SIZE_OF_BOARD; j++){
+            diagonal2.add(fields[j][SIZE_OF_BOARD - 1 - j]);
+        }
+        if(diagonal2.size() == 1 && !diagonal2.contains(0)){
+            typeOfWin.put("diagonal2", 0);
+            isRunning = false;
+        }
     }
-    public void update(int i, int j){
-        if (whose_turn){
+    public void update(int i, int j, int SIZE_OF_BOARD){
+        if (OTurn){
             fields[i][j] = 1;
-        } else if (!whose_turn){
+        } else if (!OTurn){
             fields[i][j] = 2;
         }
-        check_winner();
-        draw = check_draw();
-        whose_turn = !whose_turn;
+        checkWinner(SIZE_OF_BOARD);
+        draw = checkDraw();
+        OTurn = !OTurn;
     }
-    public boolean check_draw(){
-        if(is_running){
+    public boolean checkDraw(){
+        if(isRunning){
             for(int i=0; i<fields.length; i++){
                 for(int j=0; j<fields[0].length; j++){
                     if(fields[i][j] == 0){
@@ -72,32 +81,31 @@ public class Game {
                     }
                 }
             }
-            is_running = false;
+            isRunning = false;
             return true;
         }
         else {
             return false;
         }
     }
-    public Point2D computers_shot(){
-        List<Point2D> temp_list = new ArrayList<>();
+    public Point2D computersShot(){
+        List<Point2D> tempList = new ArrayList<>();
         for(int i=0; i<fields.length; i++){
             for(int j=0; j<fields[0].length; j++){
                 if(fields[i][j]==0){
                     Point2D p = new Point2D.Double(i,j);
-                    temp_list.add(p);
+                    tempList.add(p);
                 }
             }
         }
-        if(!temp_list.isEmpty()){
+        if(!tempList.isEmpty()){
             Random random = new Random();
             Point2D k;
-            k = temp_list.get(random.nextInt(temp_list.size()));
+            k = tempList.get(random.nextInt(tempList.size()));
             return k;
         }
         else {
-            Point2D k = new Point2D.Double(3,3);
-            return k;
+            return new Point2D.Double(-1,-1);
         }
     }
 }
