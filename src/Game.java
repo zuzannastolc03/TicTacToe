@@ -1,4 +1,5 @@
 import java.awt.geom.Point2D;
+import java.sql.Time;
 import java.util.*;
 
 public class Game {
@@ -74,9 +75,9 @@ public class Game {
     }
     public boolean checkDraw(){
         if(isRunning){
-            for(int i=0; i<fields.length; i++){
-                for(int j=0; j<fields[0].length; j++){
-                    if(fields[i][j] == 0){
+            for (int[] field : fields) {
+                for (int j = 0; j < fields[0].length; j++) {
+                    if (field[j] == 0) {
                         return false;
                     }
                 }

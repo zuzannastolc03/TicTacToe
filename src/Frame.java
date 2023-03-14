@@ -84,10 +84,10 @@ public class Frame extends JFrame implements ActionListener{
                             Point2D k = game.computersShot();
                             int x = (int)k.getX();
                             int y = (int)k.getY();
-                            if(x<=2 && y<=2){
-                                game.update(x, y, sizeOfBoard);
-                                gamePanel.update(game.OTurn, game.isRunning, game.draw, x, y, game.typeOfWin, sizeOfBoard);
-                            }
+                            Timer timer = new Timer(200, f -> gamePanel.update(game.OTurn, game.isRunning, game.draw, x, y, game.typeOfWin, sizeOfBoard));
+                            timer.setRepeats(false);
+                            timer.start();
+                            game.update(x, y, sizeOfBoard);
                         }
                     }
                 }
